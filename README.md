@@ -2,7 +2,7 @@
 
 A high-performance, enterprise-grade embedded system test framework designed for reliability, scalability, and real-world testing scenarios. This framework provides a comprehensive solution for testing embedded devices, system performance, and hardware reliability.
 
-## 🚀 Key Features
+##  Key Features
 
 - **Advanced Concurrent Scheduling**
   - Intelligent job dispatcher with configurable max jobs limit
@@ -44,7 +44,7 @@ A high-performance, enterprise-grade embedded system test framework designed for
   - File-based configuration with inheritance
   - Environment variable support for containerized environments
 
-## 📁 Project Architecture
+##  Project Architecture
 
 ```
 embedded-test-framework/
@@ -77,7 +77,7 @@ embedded-test-framework/
 └── README_zh.md         # Chinese documentation
 ```
 
-## 🛠️ Technical Stack
+##  Technical Stack
 
 | Component | Technology | Description |
 |-----------|------------|-------------|
@@ -91,7 +91,7 @@ embedded-test-framework/
 | Logging | Asynchronous logging | High-performance log processing |
 | Testing | Unit tests & integration tests | Framework validation |
 
-## 📖 Usage Guide
+##  Usage Guide
 
 ### Build System
 
@@ -184,7 +184,7 @@ format = json
 archive = true
 ```
 
-## 📊 Test Reports
+##  Test Reports
 
 Test results are generated in the specified report directory as JSON files with timestamp-based naming:
 
@@ -258,7 +258,7 @@ Test results are generated in the specified report directory as JSON files with 
 }
 ```
 
-## 🔧 Core Modules
+##  Core Modules
 
 ### 1. Test Runner
 
@@ -310,7 +310,7 @@ Manages framework configuration from multiple sources:
 - **Default Provider**: Provides sensible default values
 - **Validation Engine**: Validates configuration values and types
 
-## ✨ Technical Highlights
+##  Technical Highlights
 
 - **Advanced Concurrency Model**: Custom job scheduler with dynamic load balancing and priority queuing
 - **Real Device Testing**: SSH-based remote testing for actual hardware validation
@@ -323,7 +323,7 @@ Manages framework configuration from multiple sources:
 - **Performance Optimized**: Minimal overhead and efficient resource utilization
 - **Cross-Platform Compatibility**: Works with Linux, macOS, and embedded Linux systems
 
-## 🎯 Use Cases
+##  Use Cases
 
 ### Embedded System Validation
 - Test firmware and hardware on embedded devices
@@ -355,7 +355,7 @@ Manages framework configuration from multiple sources:
 - Validate compatibility with new software versions
 - Ensure consistent behavior across releases
 
-## 📈 Performance Metrics
+##  Performance Metrics
 
 | Metric | Baseline | Target | Current |
 |--------|----------|--------|---------|
@@ -367,7 +367,7 @@ Manages framework configuration from multiple sources:
 | Report Generation Time | < 2s | < 1s | 0.75s |
 | Log Processing Overhead | < 5% | < 2% | 1.8% |
 
-## 🔒 Security Considerations
+##  Security Considerations
 
 - **SSH Authentication**: Secure key-based authentication with passphrase protection
 - **Command Sanitization**: Protection against command injection attacks
@@ -378,11 +378,11 @@ Manages framework configuration from multiple sources:
 - **Input Validation**: Strict validation of user inputs and configuration values
 - **Least Privilege**: Minimal required permissions for test execution
 
-## 📝 License
+##  License
 
 MIT License - see [LICENSE](LICENSE) file for details
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these guidelines:
 
@@ -403,7 +403,7 @@ Contributions are welcome! Please follow these guidelines:
 - Include comprehensive documentation
 - Write unit tests for new functionality
 
-## 📚 Documentation
+##  Documentation
 
 - **API Reference**: Detailed documentation for all public APIs
 - **Developer Guide**: Step-by-step guide for extending the framework
@@ -411,7 +411,7 @@ Contributions are welcome! Please follow these guidelines:
 - **Troubleshooting Guide**: Common issues and solutions
 - **Architecture Documentation**: Detailed system architecture overview
 
-## 🔍 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -439,36 +439,8 @@ grep -i "error" logs/test.log
 grep -E "test.*duration" logs/test.log
 ```
 
-## 📞 Support
 
-- **Issue Tracker**: [GitHub Issues](https://github.com/yourusername/embedded-test-framework/issues) for bug reports and feature requests
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/embedded-test-framework/discussions) for questions and ideas
-- **Documentation**: Comprehensive documentation in the `docs/` directory
-- **Community Support**: Join our Discord community for real-time assistance
-
-## 🚀 Roadmap
-
-### Current Features
-- [x] Concurrent test scheduling with max jobs limit
-- [x] Timeout control with process termination
-- [x] JSON test report generation
-- [x] Real device testing via SSH
-- [x] System metrics collection
-- [x] Multi-level logging system
-- [x] Configuration management
-- [x] Progress bar visualization
-
-### Planned Features
-- [ ] Network performance testing
-- [ ] GPU acceleration support
-- [ ] Docker container integration
-- [ ] Web-based dashboard for test results
-- [ ] Plugin system for custom test types
-- [ ] Distributed testing across multiple devices
-- [ ] Test result visualization tools
-- [ ] Automated test case generation
-
-## 🏆 Achievements
+##  Achievements
 
 - **Performance Excellence**: 2x faster test execution compared to sequential testing
 - **Reliability**: 99.9% test completion rate in production environments
@@ -478,7 +450,7 @@ grep -E "test.*duration" logs/test.log
 - **Adoption**: Used by 50+ embedded systems teams worldwide
 - **Recognition**: Featured in Embedded Systems Design magazine
 
-## 📊 Example Use Case
+##  Example Use Case
 
 ### Continuous Integration Pipeline
 
