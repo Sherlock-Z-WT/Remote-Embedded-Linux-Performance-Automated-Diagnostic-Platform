@@ -1,1 +1,0 @@
-# GitHub Upload Instructions\n\n1. Go to GitHub.com and create a new repository\n2. Copy the repository URL (e.g., https://github.com/yourusername/embedded-test-framework.git)\n3. Run the following commands:\n   git remote add origin <repository_url>\n   git push -u origin master\n\nYour project will be uploaded to GitHub!
