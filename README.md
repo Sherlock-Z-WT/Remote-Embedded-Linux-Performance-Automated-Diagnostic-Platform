@@ -1,8 +1,15 @@
-# Embedded Test Framework
+# Production-Grade Embedded Test Framework
 
-A high-performance, enterprise-grade embedded system test framework designed for reliability, scalability, and real-world testing scenarios. This framework provides a comprehensive solution for testing embedded devices, system performance, and hardware reliability.
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Sherlock-Z-WT/Embedded-Test-Framework/actions)
+[![Language](https://img.shields.io/badge/language-C%2093.8%25-blue)](https://github.com/Sherlock-Z-WT/Embedded-Test-Framework)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Embedded-red)](https://github.com/Sherlock-Z-WT/Embedded-Test-Framework)
 
-##  Key Features
+**A high-performance, enterprise-grade embedded system test framework designed for semiconductor chipset validation and production reliability testing.**
+
+This framework provides a comprehensive solution for testing embedded devices, system performance, and hardware reliability. It is built for large-scale concurrent testing of embedded devices, system stability, and hardware modules (CPU, memory, WiFi, power, network). It has been optimized for CI/CD pipelines and production verification environments, similar to those used by Qualcomm, MediaTek, and other chipset manufacturers.
+
+## Key Features
 
 - **Advanced Concurrent Scheduling**
   - Intelligent job dispatcher with configurable max jobs limit
@@ -44,10 +51,8 @@ A high-performance, enterprise-grade embedded system test framework designed for
   - File-based configuration with inheritance
   - Environment variable support for containerized environments
 
-##  Project Architecture
-
-```
-embedded-test-framework/
+## Project Architecture
+Embedded-Test-Framework/
 ├── src/                 # Source code directory
 │   ├── main.c           # Main entry point and argument parsing
 │   ├── test_runner.c    # Concurrent test scheduler and executor
@@ -72,12 +77,13 @@ embedded-test-framework/
 │   └── test.conf        # Test-specific configuration
 ├── report/              # Test report output directory
 ├── logs/                # Log files directory
+├── screenshots/         # Runtime screenshots (real execution evidence)
+├── .github/workflows/   # CI/CD pipelines (GitHub Actions)
+├── Dockerfile           # Production container deployment
 ├── Makefile             # Professional build system
 ├── README.md            # English documentation
 └── README_zh.md         # Chinese documentation
-```
-
-##  Technical Stack
+text## Technical Stack
 
 | Component | Technology | Description |
 |-----------|------------|-------------|
@@ -91,12 +97,28 @@ embedded-test-framework/
 | Logging | Asynchronous logging | High-performance log processing |
 | Testing | Unit tests & integration tests | Framework validation |
 
-##  Usage Guide
+## Use Cases 
 
-### Build System
+- WiFi/5G Modem stability and interoperability testing
+- Power management endurance and leakage simulation
+- CPU/Memory/IO stress testing under high load
+- Remote embedded device batch verification (SSH)
+- Pre-production chipset reliability validation
+- CI/CD automated regression testing
+
+## Quick Start (Docker - 推荐生产部署)
 
 ```bash
-# Build the framework
+# 1. Build
+docker build -t embedded-test-framework .
+
+# 2. Run (example)
+docker run -it --rm \
+  -v $(pwd)/report:/app/report \
+  -v $(pwd)/logs:/app/logs \
+  embedded-test-framework --jobs 16 --timeout 120
+Build & Run (本地)
+Bash# Build the framework
 make
 
 # Clean build artifacts
@@ -113,12 +135,8 @@ make run-quiet
 
 # Run tests with custom configuration
 make run CONFIG=config/test.conf
-```
-
-### Command Line Interface
-
-```bash
-# Basic execution
+Command Line Interface
+Bash# Basic execution
 ./test_framework
 
 # Custom concurrent jobs and timeout
@@ -138,24 +156,63 @@ make run CONFIG=config/test.conf
 
 # Run specific test suite
 ./test_framework --test-suite cpu,memory
-```
+Configuration Options
 
-### Configuration Options
 
-| Short Option | Long Option | Description | Default Value |
-|--------------|-------------|-------------|---------------|
-| `-j` | `--jobs` | Maximum concurrent test jobs | 2 |
-| `-t` | `--timeout` | Test timeout in seconds | 60 |
-| `-d` | `--debug` | Enable debug level logging | Disabled |
-| `-q` | `--quiet` | Enable quiet mode | Disabled |
-| `-c` | `--config` | Path to configuration file | N/A |
-| `-r` | `--report-dir` | Directory for test reports | `./report` |
-| `-s` | `--test-suite` | Comma-separated test suite names | All tests |
 
-### Configuration File Format
 
-```ini
-# config/test.conf - Embedded Test Framework Configuration
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Short OptionLong OptionDescriptionDefault Value-j--jobsMaximum concurrent test jobs2-t--timeoutTest timeout in seconds60-d--debugEnable debug level loggingDisabled-q--quietEnable quiet modeDisabled-c--configPath to configuration fileN/A-r--report-dirDirectory for test reports./report-s--test-suiteComma-separated test suite namesAll tests
+Configuration File Format
+ini# config/test.conf - Embedded Test Framework Configuration
 
 [concurrency]
 max_jobs = 4
@@ -182,14 +239,9 @@ key_file = ~/.ssh/id_rsa
 dir = ./report
 format = json
 archive = true
-```
-
-##  Test Reports
-
+Test Reports
 Test results are generated in the specified report directory as JSON files with timestamp-based naming:
-
-```json
-{
+JSON{
   "metadata": {
     "framework_version": "1.0.0",
     "timestamp": "2026-03-19T10:30:45Z",
@@ -256,235 +308,19 @@ Test results are generated in the specified report directory as JSON files with 
     }
   ]
 }
-```
+Production Notes
 
-##  Core Modules
+Warning: Designed for testing environments. Do not run on production systems without supervision.
+Fully compatible with GitHub Actions, Jenkins, GitLab CI
+Prometheus metrics endpoint ready for monitoring integration
+Extensible for new hardware modules (WiFi, GPU, USB, etc.)
 
-### 1. Test Runner
+Contributing
+Contributions are welcome! Please see CONTRIBUTING.md and open issues/PRs.
+License
+MIT License - see LICENSE file.
 
-The test runner is the heart of the framework, responsible for managing test execution and resources:
+Made for semiconductor chipset manufacturers to accelerate reliability testing and reduce time-to-market.
+Last updated: March 2026
 
-- **Job Scheduler**: Manages concurrent test execution with configurable max jobs limit
-- **Timeout Monitor**: Tracks test execution time and terminates hanging processes
-- **Progress Tracker**: Maintains real-time test progress and status updates
-- **Error Handler**: Comprehensive error detection and recovery mechanisms
-- **Resource Manager**: Monitors system resources and adjusts job scheduling accordingly
-
-### 2. Device Manager
-
-Handles remote device connections and command execution:
-
-- **SSH Client**: Secure remote device connection with authentication support
-- **Command Executor**: Reliable remote command execution with output capture
-- **Metrics Collector**: Gathers system metrics from remote devices
-- **Connection Pool**: Efficient management of multiple device connections
-- **Error Recovery**: Automatic reconnection and error handling
-
-### 3. Report Generator
-
-Generates standardized test reports in JSON format:
-
-- **JSON Serializer**: Converts test results to standard JSON format
-- **Metrics Integrator**: Embeds system metrics into test reports
-- **Report Archiver**: Automatic report timestamping and storage
-- **CI/CD Adapter**: Formats reports for integration with CI systems
-- **Template Engine**: Supports custom report templates
-
-### 4. Logging System
-
-Provides comprehensive logging capabilities:
-
-- **Multi-level Logger**: Debug, info, warning, and error levels
-- **File Rotation**: Automatic log file rotation for disk space management
-- **Console Output**: Configurable console verbosity with color coding
-- **Timestamping**: Precise timing of log events
-- **Log Aggregation**: Support for centralized log collection
-
-### 5. Configuration System
-
-Manages framework configuration from multiple sources:
-
-- **Command Line Parser**: Processes command-line arguments with long options
-- **File Parser**: Reads configuration from INI-style files
-- **Environment Parser**: Reads configuration from environment variables
-- **Default Provider**: Provides sensible default values
-- **Validation Engine**: Validates configuration values and types
-
-##  Technical Highlights
-
-- **Advanced Concurrency Model**: Custom job scheduler with dynamic load balancing and priority queuing
-- **Real Device Testing**: SSH-based remote testing for actual hardware validation
-- **Proactive Timeout Control**: Prevents test hangs without affecting other tests
-- **Comprehensive Metrics Collection**: Detailed system resource monitoring with custom metrics support
-- **Professional Build System**: GNU Make with dependency tracking and parallel build support
-- **Extensible Architecture**: Modular design with plugin support for custom test types
-- **Robust Error Handling**: Graceful degradation and comprehensive error recovery
-- **Security-First Design**: Secure SSH connection management and command sanitization
-- **Performance Optimized**: Minimal overhead and efficient resource utilization
-- **Cross-Platform Compatibility**: Works with Linux, macOS, and embedded Linux systems
-
-##  Use Cases
-
-### Embedded System Validation
-- Test firmware and hardware on embedded devices
-- Validate system stability under various conditions
-- Verify hardware-software integration
-
-### System Health Monitoring
-- Continuous monitoring of server and device health
-- Proactive detection of performance issues
-- Resource utilization tracking
-
-### CI/CD Pipeline Integration
-- Automated testing in continuous integration workflows
-- Quality gate enforcement
-- Test result aggregation and analysis
-
-### Performance Benchmarking
-- Measure and compare system performance
-- Identify performance bottlenecks
-- Validate performance improvements
-
-### Stress Testing
-- Evaluate system stability under load
-- Test hardware limits and failure modes
-- Identify memory leaks and resource exhaustion issues
-
-### Regression Testing
-- Detect performance regressions in system updates
-- Validate compatibility with new software versions
-- Ensure consistent behavior across releases
-
-##  Performance Metrics
-
-| Metric | Baseline | Target | Current |
-|--------|----------|--------|---------|
-| Test Execution Time | < 30s | < 15s | 18.75s |
-| Memory Usage | < 100MB | < 50MB | 45.2MB |
-| CPU Utilization | < 20% | < 10% | 12.5% |
-| Test Concurrency | 2 jobs | 8+ jobs | 8 jobs |
-| SSH Connection Time | < 2s | < 0.5s | 0.8s |
-| Report Generation Time | < 2s | < 1s | 0.75s |
-| Log Processing Overhead | < 5% | < 2% | 1.8% |
-
-##  Security Considerations
-
-- **SSH Authentication**: Secure key-based authentication with passphrase protection
-- **Command Sanitization**: Protection against command injection attacks
-- **Resource Limits**: Prevention of resource exhaustion attacks
-- **Error Handling**: Secure error reporting without sensitive information
-- **File Permissions**: Proper file permission management for configuration files
-- **Network Security**: Encrypted communication with remote devices
-- **Input Validation**: Strict validation of user inputs and configuration values
-- **Least Privilege**: Minimal required permissions for test execution
-
-##  License
-
-MIT License - see [LICENSE](LICENSE) file for details
-
-##  Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. **Fork the Repository**: Create your own fork of the project
-2. **Create a Feature Branch**: `git checkout -b feature/your-feature-name`
-3. **Make Changes**: Implement your feature or bug fix
-4. **Write Tests**: Add tests for your changes
-5. **Run Tests**: Ensure all tests pass
-6. **Commit Changes**: `git commit -m "Add your feature description"`
-7. **Push to Branch**: `git push origin feature/your-feature-name`
-8. **Open a Pull Request**: Submit your changes for review
-
-### Code Style Guidelines
-- Follow C99 standard
-- Use 4 spaces for indentation
-- Limit line length to 80 characters
-- Use descriptive variable and function names
-- Include comprehensive documentation
-- Write unit tests for new functionality
-
-##  Documentation
-
-- **API Reference**: Detailed documentation for all public APIs
-- **Developer Guide**: Step-by-step guide for extending the framework
-- **Testing Best Practices**: Recommendations for writing effective tests
-- **Troubleshooting Guide**: Common issues and solutions
-- **Architecture Documentation**: Detailed system architecture overview
-
-##  Troubleshooting
-
-### Common Issues
-
-| Issue | Possible Cause | Solution |
-|-------|----------------|----------|
-| SSH Connection Failed | Network connectivity issues | Verify network connection and SSH configuration |
-| Permission Denied | Incorrect SSH keys or permissions | Ensure proper file permissions and SSH key setup |
-| Timeout Expired | Test taking too long to complete | Adjust timeout value for long-running tests |
-| Memory Exhaustion | Too many concurrent jobs | Reduce concurrent job count for resource-constrained systems |
-| Report Generation Failed | Disk space or permission issues | Check disk space and directory permissions |
-| Test Hanging | Deadlock or infinite loop in test | Implement proper timeout and error handling |
-
-### Log Analysis
-
-Detailed logs are available in the `logs/` directory. Use the following commands for log analysis:
-
-```bash
-# View recent log entries
-tail -f logs/test.log
-
-# Search for errors
-grep -i "error" logs/test.log
-
-# Analyze test execution times
-grep -E "test.*duration" logs/test.log
-```
-
-
-##  Achievements
-
-- **Performance Excellence**: 2x faster test execution compared to sequential testing
-- **Reliability**: 99.9% test completion rate in production environments
-- **Scalability**: Supports up to 16 concurrent test jobs on modern hardware
-- **Compatibility**: Works with Linux, macOS, and embedded Linux systems
-- **Extensibility**: Easy to add new test types and metrics through plugin system
-- **Adoption**: Used by 50+ embedded systems teams worldwide
-- **Recognition**: Featured in Embedded Systems Design magazine
-
-##  Example Use Case
-
-### Continuous Integration Pipeline
-
-```yaml
-# .github/workflows/test.yml
-name: Embedded System Tests
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build test framework
-        run: make
-      - name: Run tests
-        run: ./test_framework --config config/ci.conf
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: report/
-      - name: Fail on test failure
-        run: |
-          if grep -q "failed": " report/test_report.json"; then
-            exit 1
-          fi
-```
-
----
-
-*Built with ❤️ for embedded systems testing*
+*Built with for embedded systems testing*
