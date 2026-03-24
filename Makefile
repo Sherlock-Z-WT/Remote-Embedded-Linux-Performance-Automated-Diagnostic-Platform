@@ -60,7 +60,8 @@ help:
 	@echo "  make help     - 显示帮助信息"
 
 # 依赖关系
-$(BUILD_DIR)/main.o: $(INCLUDE_DIR)/logger.h $(INCLUDE_DIR)/device.h $(INCLUDE_DIR)/test_runner.h $(INCLUDE_DIR)/config.h
+$(BUILD_DIR)/main.o: $(INCLUDE_DIR)/logger.h $(INCLUDE_DIR)/device.h $(INCLUDE_DIR)/test_runner.h $(INCLUDE_DIR)/config.h $(INCLUDE_DIR)/network.h
+$(BUILD_DIR)/network.o: $(INCLUDE_DIR)/network.h $(INCLUDE_DIR)/logger.h $(INCLUDE_DIR)/test_runner.h $(INCLUDE_DIR)/config.h
 $(BUILD_DIR)/logger.o: $(INCLUDE_DIR)/logger.h
 $(BUILD_DIR)/device.o: $(INCLUDE_DIR)/device.h
 $(BUILD_DIR)/config.o: $(INCLUDE_DIR)/config.h

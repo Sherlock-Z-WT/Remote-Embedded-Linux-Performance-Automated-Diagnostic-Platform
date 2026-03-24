@@ -1,326 +1,295 @@
-# Production-Grade Embedded Test Framework
+# 远程嵌入式 Linux 性能自动化诊断平台
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Sherlock-Z-WT/Embedded-Test-Framework/actions)
-[![Language](https://img.shields.io/badge/language-C%2093.8%25-blue)](https://github.com/Sherlock-Z-WT/Embedded-Test-Framework)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Embedded-red)](https://github.com/Sherlock-Z-WT/Embedded-Test-Framework)
+## 项目简介
 
-**A high-performance, enterprise-grade embedded system test framework designed for semiconductor chipset validation and production reliability testing.**
+远程嵌入式 Linux 性能自动化诊断平台是一个基于多进程架构的综合性系统，整合了嵌入式测试框架与内核观测功能，实现了从 Windows 控制端远程管理 Linux 设备的压测、性能诊断和测试执行全流程。该平台旨在为嵌入式设备开发人员提供一个高效、自动化的性能测试和诊断工具，帮助他们快速识别和解决系统性能瓶颈。
 
-This framework provides a comprehensive solution for testing embedded devices, system performance, and hardware reliability. It is built for large-scale concurrent testing of embedded devices, system stability, and hardware modules (CPU, memory, WiFi, power, network). It has been optimized for CI/CD pipelines and production verification environments, similar to those used by Qualcomm, MediaTek, and other chipset manufacturers.
+## 技术架构
 
-## Key Features
+### 系统架构
 
-- **Advanced Concurrent Scheduling**
-  - Intelligent job dispatcher with configurable max jobs limit
-  - Dynamic load balancing for optimal resource utilization
-  - Priority-based test execution queue
+- **Control-Agent 模式**：采用客户端-服务器架构，Windows 控制端通过 Socket 与 Linux 代理端通信
+- **多线程并发处理**：Agent 端使用多线程模型处理并发连接，提高系统响应速度
+- **跨语言整合**：C 语言测试框架与 Python 网络服务无缝集成，充分发挥各自优势
+- **实时监控与自动诊断**：持续监控系统 CPU、内存等状态，当性能达到阈值时自动触发性能诊断
 
-- **Robust Timeout Control**
-  - Proactive process management using `waitpid(WNOHANG)` polling
-  - Graceful and forced termination with `kill(SIGKILL)`
-  - Per-test timeout configuration
+### 核心组件
 
-- **Real Device Testing**
-  - SSH-based remote device connection with secure authentication
-  - Command execution and output capture on remote devices
-  - Connection pooling for efficient multiple device management
+| 组件        | 功能             | 实现语言     | 位置            | 技术特点            |
+| --------- | -------------- | -------- | ------------- | --------------- |
+| Agent 服务器 | 执行测试、性能诊断、返回结果 | Python   | agent.py      | 多线程处理、实时监控、自动诊断 |
+| 控制客户端     | 发送指令、接收结果、展示报告 | Python   | control.py    | 交互式界面、文件下载、远程控制 |
+| 嵌入式测试框架   | CPU、内存、磁盘、设备测试 | C        | src/          | 高性能、低开销、模块化设计   |
+| 网络通信模块    | Socket 服务器功能   | C        | src/network.c | 低延迟、高可靠性、多客户端支持 |
+| 性能诊断模块    | 火焰图生成、内存分析     | Python/C | agent.py      | 实时分析、可视化展示      |
 
-- **Comprehensive System Metrics**
-  - Real-time monitoring of CPU, memory, disk usage
-  - Process stability and resource utilization tracking
-  - Custom metric collection via extensible plugins
+## 功能特性
 
-- **Standard JSON Test Reports**
-  - CI/CD compatible output format
-  - Detailed test results with metrics integration
-  - Timestamped report archiving system
+### Agent 端（Linux 代理端）
 
-- **Interactive Progress Visualization**
-  - Real-time test progress bar with completion percentage
-  - Estimated time of completion (ETA) calculation
-  - Color-coded status indicators
+- **实时监控**：持续监控 CPU、内存、磁盘、网络等系统状态，精度达到毫秒级
+- **自动诊断**：当系统性能达到预设阈值时，自动执行性能诊断并生成报告
+- **压测功能**：支持 CPU 压测、内存压测、IO 压测和综合压测，可自定义压测参数
+- **性能分析**：使用 perf 工具采集 CPU 性能数据，生成可视化火焰图，分析内存使用情况
+- **测试执行**：无缝集成嵌入式测试框架，执行 CPU、内存、磁盘、设备等各类测试
+- **Socket 服务器**：支持多客户端并发连接，提供稳定的网络通信服务
+- **多线程处理**：采用线程池模式，高效处理并发请求，提高系统吞吐量
+- **权限管理**：智能处理 sudo 权限问题，确保系统稳定运行
 
-- **Flexible Logging System**
-  - Multi-level logging (debug/info/warning/error)
-  - Configurable verbosity modes
-  - Asynchronous logging with file rotation
+### Control 端（Windows 控制端）
 
-- **Configuration Management**
-  - Command-line argument parsing with long options
-  - File-based configuration with inheritance
-  - Environment variable support for containerized environments
+- **远程控制**：通过网络向 Agent 端发送各种指令，实现远程管理
+- **状态查询**：实时获取系统状态信息，包括 CPU 使用率、内存使用情况等
+- **压测触发**：远程触发 Agent 端执行各类压测，可设置压测参数
+- **性能诊断**：远程触发 Agent 端执行性能诊断，获取详细的性能分析报告
+- **测试执行**：远程执行嵌入式测试框架的测试，支持带参数的测试执行
+- **结果获取**：自动下载生成的火焰图、测试报告等文件，方便本地分析
+- **交互式界面**：提供友好的命令行界面，方便用户操作
+- **错误处理**：完善的错误处理机制，确保通信稳定可靠
 
-## Project Architecture
-Embedded-Test-Framework/
-├── src/                 # Source code directory
-│   ├── main.c           # Main entry point and argument parsing
-│   ├── test_runner.c    # Concurrent test scheduler and executor
-│   ├── report.c         # JSON report generator
-│   ├── logger.c         # Multi-level logging system
-│   ├── device.c         # SSH device connection manager
-│   ├── device_test.c    # Remote device testing implementation
-│   ├── config.c         # Configuration parser
-│   ├── test_registry.c  # Test registration and management
-│   └── utils.c          # Utility functions
-├── include/             # Header files
-│   ├── test_runner.h    # Test runner API definitions
-│   ├── report.h         # Report generation API
-│   ├── logger.h         # Logger API
-│   ├── device.h         # Device management API
-│   ├── metrics.h        # System metrics data structure
-│   ├── config.h         # Configuration structure
-│   ├── test_registry.h  # Test registry API
-│   └── utils.h          # Utility function declarations
-├── config/              # Configuration files
-│   ├── default.conf     # Default configuration
-│   └── test.conf        # Test-specific configuration
-├── report/              # Test report output directory
-├── logs/                # Log files directory
-├── screenshots/         # Runtime screenshots (real execution evidence)
-├── .github/workflows/   # CI/CD pipelines (GitHub Actions)
-├── Dockerfile           # Production container deployment
-├── Makefile             # Professional build system
-├── README.md            # English documentation
-└── README_zh.md         # Chinese documentation
-text## Technical Stack
+## 技术实现
 
-| Component | Technology | Description |
-|-----------|------------|-------------|
-| Programming Language | C (C99 standard) | Core framework implementation |
-| System Programming | Multi-process architecture | Process isolation and parallel execution |
-| Inter-process Communication | Pipes | Efficient data transfer between processes |
-| Networking | SSH protocol | Secure remote device communication |
-| Build System | GNU Make | Dependency tracking and parallel builds |
-| Data Serialization | JSON | Standardized test report format |
-| Concurrency | Custom job scheduler | Intelligent task management |
-| Logging | Asynchronous logging | High-performance log processing |
-| Testing | Unit tests & integration tests | Framework validation |
+### 网络通信
 
-## Use Cases 
+- **协议设计**：基于 TCP 协议，实现可靠的网络通信
+- **数据传输**：采用自定义命令格式，支持文本指令和二进制文件传输
+- **多线程处理**：Agent 端使用线程池处理并发连接，提高系统响应速度
+- **错误重连**：实现自动重连机制，确保通信可靠性
 
-- WiFi/5G Modem stability and interoperability testing
-- Power management endurance and leakage simulation
-- CPU/Memory/IO stress testing under high load
-- Remote embedded device batch verification (SSH)
-- Pre-production chipset reliability validation
-- CI/CD automated regression testing
+### 性能诊断
 
-## Quick Start (Docker - 推荐生产部署)
+- **数据采集**：使用 perf 工具采集 CPU 性能数据，支持多种事件类型
+- **火焰图生成**：使用 FlameGraph 工具将性能数据转换为可视化的火焰图
+- **内存分析**：采集内存使用情况，生成内存快照和分析报告
+- **系统负载分析**：采集系统负载、进程状态等信息，全面分析系统性能
+
+### 测试执行
+
+- **模块化设计**：嵌入式测试框架采用模块化设计，易于扩展和维护
+- **多类型测试**：支持 CPU、内存、磁盘、设备等多种类型的测试
+- **参数化测试**：支持带参数的测试执行，满足不同测试场景需求
+- **测试结果管理**：自动保存测试结果，生成结构化的测试报告
+
+### 自动监控
+
+- **实时数据采集**：使用 psutil 库实时采集系统状态数据
+- **阈值触发**：当系统性能达到预设阈值时，自动触发性能诊断
+- **定期报告**：定期生成系统性能报告，跟踪系统性能变化趋势
+- **异常检测**：智能检测系统异常，及时发现潜在问题
+
+## 安装说明
+
+### 系统要求
+
+- **Agent 端**：
+  - Linux 系统，内核版本 3.10+
+  - Python 3.6+，安装有 psutil 库
+  - perf 工具（linux-tools-common）
+  - stress-ng 工具
+  - FlameGraph 工具
+- **Control 端**：
+  - Windows 系统
+  - Python 3.6+，安装有 socket 库
+
+### 依赖项安装
+
+#### Agent 端依赖
 
 ```bash
-# 1. Build
-docker build -t embedded-test-framework .
+# 安装 Python 依赖
+pip3 install psutil
+
+# 安装系统工具
+sudo apt-get update
+sudo apt-get install linux-tools-common linux-tools-$(uname -r) stress-ng git
+
+# 安装 FlameGraph
+git clone https://github.com/brendangregg/FlameGraph ~/FlameGraph
+
+# 解决 perf 权限问题
+sudo sysctl kernel.perf_event_paranoid=-1
+
+# 永久修改 perf 权限设置
+echo "kernel.perf_event_paranoid=-1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+#### Control 端依赖
+
+```bash
+# 安装 Python 依赖
+pip install socket
+```
+
+## 快速开始
+
+### 1. 编译嵌入式测试框架
+
+```bash
+cd Remote-Linux-Performance-Diagnostic-Platform
+make clean && make
+```
+
+### 2. 启动 Agent 服务器
+
+```bash
+# 使用 Python 版本的 Agent 服务器（推荐）
+python3 agent.py
+
+# 或使用 C 语言版本的网络服务器
+./test_framework --server
+```
+
+### 3. 运行 Control 客户端
+
+```bash
+python3 control.py
+```
+
+### 4. 发送指令
+
+- 连接到 Agent 服务器（输入服务器 IP 地址）
+- 选择要执行的操作：
+  - 开始 CPU 压测
+  - 开始综合压测
+  - 开始性能诊断
+  - 查询系统状态
+  - 执行嵌入式测试
+  - 执行嵌入式测试（带参数）
+  - 获取测试框架信息
+  - 下载最新火焰图
+
+## 支持的指令
+
+### 基本指令
+
+- **START\_STRESS\_CPU**：执行 CPU 压测并生成性能报告
+- **start\_stress**：执行综合压测（CPU、IO、内存）
+- **start\_perf**：执行性能诊断
+- **status**：查询系统状态
+- **run\_tests**：执行嵌入式测试
+- **run\_tests\_with\_args:{args}**：执行嵌入式测试，带参数
+- **get\_test\_info**：获取测试框架信息
+
+### 高级功能
+
+- **find\_flamegraph**：查找最新生成的火焰图文件
+- **download:{file\_path}**：下载指定文件
+
+## 项目结构
+
+```
+Remote-Linux-Performance-Diagnostic-Platform/
+├── src/               # 嵌入式测试框架源码
+│   ├── config.c       # 配置管理
+│   ├── cpu_test.c     # CPU 测试
+│   ├── device.c       # 设备管理
+│   ├── device_test.c  # 设备测试
+│   ├── disk_test.c    # 磁盘测试
+│   ├── logger.c       # 日志管理
+│   ├── main.c         # 主程序
+│   ├── mem_test.c     # 内存测试
+│   ├── network.c      # 网络通信模块
+│   ├── report.c       # 报告生成
+│   ├── test_registry.c # 测试注册表
+│   └── test_runner.c  # 测试运行器
+├── include/           # 头文件
+│   ├── config.h
+│   ├── device.h
+│   ├── logger.h
+│   ├── metrics.h
+│   ├── network.h
+│   ├── report.h
+│   ├── test_registry.h
+│   ├── test_runner.h
+│   └── tests.h
+├── config/            # 配置文件
+├── logs/              # 日志文件
+├── report/            # 测试报告
+├── reports/           # 性能诊断报告
+├── agent.py           # Python 版本的 Agent 服务器
+├── control.py         # Python 版本的控制客户端
+├── Makefile           # 编译配置文件
+├── README.md          # 项目说明文档（中文）
+└── README_EN.md       # 项目说明文档（英文）
+```
+
+## 优势
+
+1. **功能整合**：成功将两个独立项目（嵌入式测试框架和内核观测平台）整合为统一平台，实现功能互补
+2. **自动化**：实现从压测到诊断的全流程自动化，减少人工干预，提高测试效率
+3. **实时性**：实时监控系统状态，及时发现性能问题，快速响应系统异常
+4. **可靠性**：处理权限问题（如 sudo 权限），确保系统稳定运行，提高系统可靠性
+5. **可扩展性**：模块化设计，易于添加新功能和支持新设备，适应不同测试场景
+6. **跨平台**：支持 Windows 控制端远程管理 Linux 设备，打破平台限制
+7. **可视化**：生成直观的火焰图和性能报告，便于分析系统性能瓶颈
+8. **低开销**：嵌入式测试框架采用 C 语言实现，具有低开销、高性能的特点
+
+## 应用场景
+
+- **嵌入式设备开发**：远程测试和诊断嵌入式 Linux 设备，减少现场调试成本
+- **系统性能优化**：识别系统性能瓶颈，进行针对性优化，提高系统性能
+- **自动化测试**：实现无人值守的自动化测试和诊断，提高测试效率
+- **持续集成**：集成到 CI/CD 流程中，自动进行性能测试，确保系统质量
+- **生产环境监控**：实时监控生产环境系统状态，及时发现并解决性能问题
+- **性能基准测试**：建立系统性能基准，为系统优化提供参考依据
+
+## 故障排除
+
+### 常见问题
+
+1. **无法生成火焰图**
+   - 检查 perf 工具是否安装正确：`perf --version`
+   - 检查 FlameGraph 目录是否存在：`ls -la ~/FlameGraph`
+   - 检查用户权限是否足够：`sysctl kernel.perf_event_paranoid`
+   - 尝试使用 sudo 权限运行 Agent 服务器
+2. **连接失败**
+   - 检查 Agent 服务器是否正在运行：`ps aux | grep agent.py`
+   - 检查网络连接是否正常：`ping <agent_ip>`
+   - 检查端口是否被占用：`netstat -tuln | grep 8888`
+   - 检查防火墙设置是否阻止了端口访问
+3. **测试执行失败**
+   - 检查嵌入式测试框架是否编译成功：`ls -la test_framework`
+   - 检查测试文件权限是否正确：`chmod +x test_framework`
+   - 检查测试框架依赖项是否安装完整
+
+### 日志管理
+
+- Agent 服务器日志输出到控制台，便于实时查看
+- 测试结果保存到 reports/ 目录，按时间戳命名
+- 性能诊断报告保存到 reports/ 目录，包含火焰图和分析数据
+- 系统日志保存到 logs/ 目录，便于问题排查
+
+##
+
+## 技术栈
+
+| 类别       | 技术/工具      | 用途             |
+| -------- | ---------- | -------------- |
+| 编程语言     | Python 3   | 网络服务、控制逻辑、性能分析 |
+| 编程语言     | C          | 嵌入式测试框架、网络通信模块 |
+| 系统工具     | perf       | CPU 性能数据采集     |
+| 系统工具     | stress-ng  | 系统压测           |
+| 工具库      | FlameGraph | 火焰图生成          |
+| Python 库 | psutil     | 系统状态监控         |
+| 网络协议     | TCP Socket | 网络通信           |
+| 构建工具     | Make       | 编译嵌入式测试框架      |
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request 来改进这个项目。贡献者可以：
+
+- 报告 bug 和提出功能请求
+- 提交代码改进和新功能实现
+- 完善文档和示例
+- 参与代码审查和测试
+
+## 许可证
+
+本项目采用 MIT 许可证。详见 LICENSE 文件。
+
+## 联系方式
+
+- 项目维护者：\[Louis]
+- 邮箱：\[[zwt20051229@gmail.com](mailto:your.email@example.com)]
 
-# 2. Run (example)
-docker run -it --rm \
-  -v $(pwd)/report:/app/report \
-  -v $(pwd)/logs:/app/logs \
-  embedded-test-framework --jobs 16 --timeout 120
-Build & Run (本地)
-Bash# Build the framework
-make
-
-# Clean build artifacts
-make clean
-
-# Run tests with default configuration
-make run
-
-# Run tests with debug logging
-make run-debug
-
-# Run tests with quiet mode
-make run-quiet
-
-# Run tests with custom configuration
-make run CONFIG=config/test.conf
-Command Line Interface
-Bash# Basic execution
-./test_framework
-
-# Custom concurrent jobs and timeout
-./test_framework --jobs 8 --timeout 45
-
-# Enable debug logging
-./test_framework --debug
-
-# Enable quiet mode (minimal output)
-./test_framework --quiet
-
-# Load configuration from file
-./test_framework --config config/test.conf
-
-# Specify report output directory
-./test_framework --report-dir ./custom_reports
-
-# Run specific test suite
-./test_framework --test-suite cpu,memory
-Configuration Options
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Short OptionLong OptionDescriptionDefault Value-j--jobsMaximum concurrent test jobs2-t--timeoutTest timeout in seconds60-d--debugEnable debug level loggingDisabled-q--quietEnable quiet modeDisabled-c--configPath to configuration fileN/A-r--report-dirDirectory for test reports./report-s--test-suiteComma-separated test suite namesAll tests
-Configuration File Format
-ini# config/test.conf - Embedded Test Framework Configuration
-
-[concurrency]
-max_jobs = 4
-timeout = 30
-
-[logging]
-debug = true
-quiet = false
-log_file = logs/test.log
-
-[tests]
-cpu_test = true
-mem_test = true
-disk_test = true
-network_test = false
-
-[device]
-host = 192.168.1.100
-user = test
-port = 22
-key_file = ~/.ssh/id_rsa
-
-[report]
-dir = ./report
-format = json
-archive = true
-Test Reports
-Test results are generated in the specified report directory as JSON files with timestamp-based naming:
-JSON{
-  "metadata": {
-    "framework_version": "1.0.0",
-    "timestamp": "2026-03-19T10:30:45Z",
-    "execution_time": 18.75,
-    "hostname": "test-server-01",
-    "os": "Linux 5.4.0-91-generic x86_64"
-  },
-  "summary": {
-    "total": 4,
-    "passed": 3,
-    "failed": 1,
-    "skipped": 0,
-    "success_rate": 75.0
-  },
-  "tests": [
-    {
-      "name": "CPU Stress Test",
-      "status": "PASSED",
-      "duration": 5.2,
-      "metrics": {
-        "cpu_usage": 15.2,
-        "memory_usage": 45.3,
-        "disk_usage": 23.7,
-        "process_count": 128,
-        "load_average": [0.15, 0.22, 0.18]
-      },
-      "details": "CPU stress test completed successfully with no errors"
-    },
-    {
-      "name": "Memory Test",
-      "status": "PASSED",
-      "duration": 3.8,
-      "metrics": {
-        "memory_usage": 67.2,
-        "swap_usage": 12.5,
-        "available_memory": 1536,
-        "memory_utilization": 45.8
-      },
-      "details": "Memory test passed with no memory leaks detected"
-    },
-    {
-      "name": "Disk I/O Test",
-      "status": "PASSED",
-      "duration": 6.2,
-      "metrics": {
-        "disk_usage": 23.7,
-        "io_read_speed": 125.4,
-        "io_write_speed": 98.7,
-        "io_latency": 1.2,
-        "inode_usage": 15.3
-      },
-      "details": "Disk I/O performance within expected range"
-    },
-    {
-      "name": "Network Test",
-      "status": "FAILED",
-      "duration": 3.5,
-      "metrics": {
-        "ping_latency": 150.2,
-        "packet_loss": 5.0,
-        "bandwidth": 10.5
-      },
-      "details": "Network test failed: high packet loss detected"
-    }
-  ]
-}
-Production Notes
-
-Warning: Designed for testing environments. Do not run on production systems without supervision.
-Fully compatible with GitHub Actions, Jenkins, GitLab CI
-Prometheus metrics endpoint ready for monitoring integration
-Extensible for new hardware modules (WiFi, GPU, USB, etc.)
-
-Contributing
-Contributions are welcome! Please see CONTRIBUTING.md and open issues/PRs.
-License
-MIT License - see LICENSE file.
-
-Made for semiconductor chipset manufacturers to accelerate reliability testing and reduce time-to-market.
-Last updated: March 2026
-
-*Built with for embedded systems testing*
